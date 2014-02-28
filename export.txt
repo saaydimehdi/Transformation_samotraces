@@ -1,0 +1,5 @@
+05/01/2014:22:47:23,trace:create:obsel,14,triangle,couleur,rouge
+05/01/2014:22:47:23,trace:remove:obsel,6,carre,couleur,bleu
+05/01/2014:22:47:23,trace:update:obsel,4,cercle,couleur,bleu;4,triangle,couleur,bleu
+05/01/2014:22:47:23,trace:update:obsel,8,triangle,couleur,rouge;4,triangle,couleur,bleu
+05/01/2014:22:47:23,trace:update:obsel,2,triangle,couleur,jaune;2,triangle,couleur,rouge
