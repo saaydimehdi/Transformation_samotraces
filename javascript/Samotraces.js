@@ -172,8 +172,7 @@ Samotraces.Lib.DemoTrace.prototype = {
 		this.traceSet.push(obs);
 		this.trigger('trace:update',this.traceSet);
 		this.trigger('trace:create:obsel',obs);
-		
-		
+			
 	},
 
 	/**
@@ -185,8 +184,6 @@ Samotraces.Lib.DemoTrace.prototype = {
 	 */	
 	
 	updateObsel: function(old_obs,new_obs) {
-	    var res=false ;
-		var i=0;
 		this.removeObsel(old_obs);
 
 		  this.traceSet.push(new_obs);
@@ -1542,7 +1539,7 @@ Samotraces.Lib.WindowState = (function() {
 Samotraces.Widgets.ImportTrace = function(html_id,trace) {
 	// WidgetBasicTimeForm is a Widget
 	Samotraces.Widgets.Widget.call(this,html_id);
-
+    Samotraces.Lib.EventHandler.call(this);//mehdi
 	this.trace = trace;
     this.html_id=html_id;
 	this.init_DOM();
@@ -1555,11 +1552,11 @@ Samotraces.Widgets.ImportTrace.prototype = {
 		//>>mehdi
         if (this.html_id=='importer')
 		{
-		var text_node = document.createTextNode('Import a trace: ');
+		var text_node = document.createTextNode('Importer une trace: ');
 		}
 		else
 		{
-		 var text_node = document.createTextNode('Import a transformation: ');
+		 var text_node = document.createTextNode('Importer une transformation: ');
 		}
 		p_element.appendChild(text_node);
         //<<
@@ -1578,24 +1575,21 @@ Samotraces.Widgets.ImportTrace.prototype = {
 
 		this.form_element = document.createElement('form');
 		this.input_element.addEventListener('change', this.on_change.bind(this));
-
 		this.form_element.appendChild(p_element);
 		this.element.appendChild(this.form_element);
 
 		var button_el = document.createElement('p');
 		var a_el = document.createElement('a');
 		a_el.href = "";
-		a_el.innerHTML = "toggle console";
-		button_el.appendChild(a_el);
-//		button_el.innerHTML = "<a href=\"\">toggle console</a>";
+		//a_el.innerHTML = "toggle console";
+		//button_el.appendChild(a_el);
+//button_el.innerHTML = "<a href=\"\">toggle console</a>";
 		a_el.addEventListener('click',this.on_toggle.bind(this));
 		this.element.appendChild(button_el);
 
 		this.display_element = document.createElement('div');
 		this.display_element.style.display = 'none';
 		this.element.appendChild(this.display_element);
-		
-
 	},
 
 	on_change: function(e) {
@@ -1617,6 +1611,12 @@ Samotraces.Widgets.ImportTrace.prototype = {
 			textarea_el.setAttribute('readonly','True');
 			this.display_element.appendChild(textarea_el);
  			var reader = new FileReader();
+			/* A METTRE A JOUR PLUS TARD
+			// modif specifiques pour Mehdi
+			if(this.html_id == 'importer') {
+				this.trace = new Samotraces.Lib.DemoTrace();
+			}
+			*/
 			reader.onload = (function(el,parser,trace) {
 				return function(e) {
 					
@@ -1626,13 +1626,16 @@ Samotraces.Widgets.ImportTrace.prototype = {
 				};
 			})
 			(textarea_el,this.parse_csv,this.trace);
-/*			reader.onprogress = function(e) {
+           /*reader.onprogress = function(e) {
 				console.log(e);
 			};*/
 			
 			reader.readAsText(file);
-			this.display_element.appendChild(content_el);		
+			//this.display_element.appendChild(content_el);	
+            this.trigger('end:import:trace',this.trace);//mehdi		
 		}
+		
+		
 	},
 
 	on_toggle: function(e) {
@@ -1760,7 +1763,14 @@ Samotraces.Widgets.ImportTrace.prototype = {
 		
 		//	console.log('new obsel');
 		trace.newObsel(type,time,attributes);
-		});		
+		
+		});	
+	
+		//>>mehdi
+        list_typeobsel(trace,'add_type');
+		list_typeobsel(trace,'replace_type');
+       //<<mehdi generate list obsel type for any trace
+		
 		}
 		
 		else 
@@ -1768,174 +1778,44 @@ Samotraces.Widgets.ImportTrace.prototype = {
 		    //alert(text);
 			var mes_transformation = JSON.parse(text);
 			mes_transformation.map(function(objet) {
-			if (objet.even=='trace:create:obsel')
-			  {
-				objet.obsels_source.map(function(obsource) {  
-				 var res=false ;	
-				trace.traceSet.forEach(function(o){
-				if(o.timestamp==obsource.timestamp)
-				 { 
-				 res=true;
-			      //<< créer une boite de dialogue
+			    
+				if (objet.evt=='trace:remove:obsel')
+				{
+					objet.obsels_source.map(function(obsource) { 
+						trace.traceSet.forEach(function(obs){
+							if(obs.id==obsource.idObs)
+							{
+							  trace.removeObsel(obs);
+							}
+						});
 				  
-				  $(function() {
-					$("#dialog").html('voulez vous vraiment supprimé obsel de timestamp'+' '+obsource.timestamp);
-					
-					$( "#dialog" ).dialog({
-					  //autoOpen: false,
-					  height:180,
-			          width:300,
-					  draggable: true,
-                      resizable: true,
-					  position: ["center",90] ,
-            
-					  //title: 'voulez vous remplacé obsel de timestamp'+objet.timestamp,
-					  buttons: {
-						"Oui": function() {
-						  //$('body').css('background', 'yellow');
-						  trace.removeObsel(o);
-						  trace.newObsel(obsource.type,obsource.timestamp,obsource.attributes);
-						  $( this ).dialog( "close" );
-						},
-						"Non": function() {
-						  trace.newObsel(obsource.type,obsource.timestamp,obsource.attributes); 
-						   $( this ).dialog( "close" );
-						}
-					  }
-					});
-				});	
-				//>>	
-				}
-			 });
-			 if (res!=true)
-			  {
-			    trace.newObsel(obsource.type,obsource.timestamp,obsource.attributes); 
-			  }
-			});
-			  }
-			  
-			 if (objet.even=='trace:remove:obsel')
-			  { 
-				var obs_to_remove ;
-				objet.obsels_source.map(function(obsource) { 
-				 
-				trace.traceSet.forEach(function(obs){
-				//alert(obs.attributes[0]);
-	         if(obs.timestamp==obsource.timestamp )
-			  {
-				 if(obs.type!=obsource.type && obs.attributes.couleur!=obsource.attributes.couleur)
-						 {
-						 
-						  //alert('supprimer tout les rond rouge');
-						  //<< créer une boite de dialogue
-				  
-							  $(function() {
-								$("#dialog").html('voulez vous supprimer tous les '+obsource.type+' '+obsource.attributes.couleur);
-								
-								$( "#dialog" ).dialog({
-								  //autoOpen: false,
-								  height:180,
-								  width:300,
-								  draggable: true,
-								  resizable: true,
-								  position: ["center",90] ,
-						
-								  //title: 'voulez vous remplacé obsel de timestamp'+objet.timestamp,
-								  buttons: {
-									"Oui": function() {
-									  //$('body').css('background', 'yellow');
-									trace.traceSet.forEach(function(obs){ 
-									 if( obs.type==obsource.type && obs.attributes.couleur==obsource.attributes.couleur)
-									     trace.removeObsel(obs);
-									  });
-									  $( this ).dialog( "close" );
-									},
-									"Non": function() {
-									  //trace.newObsel(obsource.type,obsource.timestamp,obsource.attributes); 
-									   $( this ).dialog( "open" );
-                                       $("#dialog").html('voulez vous supprimer tous les '+obsource.type);
-									   //>>
-									     $( "#dialog" ).dialog({
-										  buttons: {
-											"Oui": function() {
-											trace.traceSet.forEach(function(obs){ 
-											 if( obs.type==obsource.type)
-												 trace.removeObsel(obs);
-											  });
-											  $( this ).dialog( "close" );
-											},
-											"Non": function() {
-											  //trace.newObsel(obsource.type,obsource.timestamp,obsource.attributes); 
-											   $( this ).dialog( "open" );
-											   $("#dialog").html('voulez vous supprimer tous les obsels '+obsource.attributes.couleur);
-											   //>>
-												 $( "#dialog" ).dialog({
-												  buttons: {
-													"Oui": function() {
-													trace.traceSet.forEach(function(obs){ 
-													 if( obs.attributes.couleur==obsource.attributes.couleur)
-														 trace.removeObsel(obs);
-													  });
-													  $( this ).dialog( "close" );
-													},
-													"Non": function() {
-													  //trace.newObsel(obsource.type,obsource.timestamp,obsource.attributes); 
-													   $( this ).dialog( "close" );
-													}  
-												  }
-											   });		
-									        }  
-										  }
-									   });		
-                                       //<<									   
-									}
-								  }
-								});
-							});	
-						//>>	
-						 }
-				 /*
-				  else if(obs.attributes.couleur==obsource.attributes.couleur)
-				        {
-						 alert('supprimer les couleur rouge');
-						}
-                  else if(obs.type==obsource.type)
-						{
-						 alert('supprimer les rond');
-						}
-				*/		
-				   else{
-				         obs_to_remove = obs ;
-					   }
-			  
-                
-               }						
-			});
-				 
+				    });
 				
-				trace.removeObsel(obs_to_remove);
-				});
-			 }
-			 
-			 
-			 
-			 
-			if (objet.even=='trace:update:obsel')
-			{
-				objet.obsels_source.map(function(obsource) { 
-				trace.traceSet.forEach(function(obs){
-					if(obs.id==obsource.idObs)
-					 {
-					  trace.removeObsel(obs);
-					 }
-				 });
-			  //new_obs = new Samotraces.Lib.Obsel(obs_to_update.id,obsource.timestamp_Tran,obsource.type_Tran,obsource.attributes_Tran);
-			//trace.updateObsel(obs_to_update,new_obs);
-			});
-			trace.newObsel(objet.type_Tran,objet.timestamp_Tran,objet.attributes_Tran)
-		 }
-		});		
-	}
+			    }
+				if (objet.evt=='trace:update:obsel')
+				{
+					objet.obsels_source.map(function(obsource) { 
+						trace.traceSet.forEach(function(obs){
+							if(obs.id==obsource.idObs)
+							{
+							  trace.removeObsel(obs);
+							}
+						});
+				 
+				    });
+					
+				  objet.obsels_Transformer.map(function(obsourcetran) { 
+				     trace.newObsel(obsourcetran.type_Tran,obsourcetran.timestamp_Tran,obsourcetran.attributes_Tran)
+				    });
+			    }
+				if (objet.evt=='trace:create:obsel')
+				{
+				  objet.obsels_source.map(function(obsource) { 
+				     trace.newObsel(obsource.type,obsource.timestamp,obsource.attributes)
+				    });
+			    }
+		    });		
+	    }
 		
 		//<<mehdi
 /*
@@ -1946,7 +1826,7 @@ Samotraces.Widgets.ImportTrace.prototype = {
 		return output;
 */
 	}
-
+ 
 };
  
 /**
@@ -2632,7 +2512,9 @@ Samotraces.Widgets.TraceDisplayIcons.prototype = {
 			.attr('stroke','red')
 			.attr('opacity','0.3');
 		this.svg_gp = this.svg.append('g')
-						.attr('transform', 'translate(0,0)');
+						.attr('transform', 'translate(0,0)')
+						.attr('id','ge');
+						
 		this.svg_selected_obsel = this.svg.append('line')
 			.attr('x1','0')
 			.attr('y1','0%')
@@ -2692,7 +2574,7 @@ var new_time = widget.timer.time - delta_x*widget.window.get_width()/widget.elem
 		this.current_offset = this.current_offset + offset;
 		this.svg_gp.attr('transform','translate('+this.current_offset+',0)');
 	},*/
-
+    
 	draw: function(e) {
 		if(e) {
 			this.data = this.trace.traceSet;
@@ -2736,7 +2618,7 @@ var new_time = widget.timer.time - delta_x*widget.window.get_width()/widget.elem
 					.selectAll('circle,image,rect')
 					// TODO: ATTENTION! WARNING! obsels MUST have a field id -> used as a key.
 					//.data(this.data); //,function(d) { return d.id;});
-					.data(this.data, function(d) { return d.id;}); // TODO: bogue in case no ID exists -> might happen with KTBS traces and new obsels
+					.data(this.data, function(d) {return d.id;}); // TODO: bogue in case no ID exists -> might happen with KTBS traces and new obsels
 	},
 
 
@@ -3457,3 +3339,4 @@ Samotraces.UIComponents.Button.prototype = {
 };
 	return Samotraces;
 }));
+

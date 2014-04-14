@@ -1,0 +1,16 @@
+0,carre,couleur,rouge,etat,plein
+2,rond,couleur,rouge,etat,plein
+4,triangle,couleur,jaune,etat,plein,symbole,moins
+6,carre,couleur,bleu,etat,plein
+8,carre,couleur,bleu,etat,vide
+10,triangle,couleur,bleu,etat,vide,symbole,point
+12,triangle,couleur,jaune,etat,vide
+14,carre,couleur,bleu,etat,vide,hachure,verticale
+16,rond,couleur,bleu,etat,vide
+18,triangle,couleur,rouge,etat,plein,symbole,plus
+20,carre,couleur,jaune,etat,vide
+22,carre,couleur,jaune,etat,vide,hachure,horizentale
+24,triangle,couleur,rouge,etat,vide,symbole,plus
+26,triangle,couleur,bleu,etat,vide,symbole,point
+29,carre,couleur,jaune,etat,vide,hachure,horizentale
+32,rond,couleur,bleu,etat,plein

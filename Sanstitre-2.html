@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Document sans nom</title>
+</head>
+<script src="http://code.jquery.com/jquery.min.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+  		<!--<script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>-->
+        <!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>-->
+        <script type="text/javascript" src="javascript/d3.js"></script>
+        <script type="text/javascript" src="javascript/jquery.js"></script>
+        <script type="text/javascript" src="javascript/jquery.mousewheel.js"></script>
+        <script type="text/javascript" src="../../../src/generate_samotraces.php"></script>
+        <script type="text/javascript" src="javascript/Samotraces.js"></script>
+        <script type="text/javascript" src="date_heure.js"></script>
+        <link rel="stylesheet" type="text/css" href="css/samotraces.css"> 
+        
+<body>
+<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/themes/base/jquery-ui.css">
+
+Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium 
+…
+fugiat quo voluptas nulla pariatur?
+
+<div id="dialog" title="Boîte de dialogue de base">
+  Cette boîte de dialogue peut être redimensionnée, déplacée et fermée.
+</div>
+
+
+
+
+</body>
+<script>
+  $(function() {
+    $( "#dialog" ).dialog({
+      //autoOpen: false,
+      buttons: {
+        "Oui": function() {
+          $('body').css('background', 'yellow');
+          $( this ).dialog( "close" );
+        },
+        "Non": function() {
+          $( this ).dialog( "close" );
+        }
+      }
+    });
+  });
+  
+ 
+</script>
+
+</html>
