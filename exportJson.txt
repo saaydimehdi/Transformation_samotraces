@@ -1,0 +1,1 @@
+[{"id_interaction":1,"date":"02/03/2014:21:03:19","evt":"trace:update:obsel","obsels_source":[{"idObs":4,"hasbegin":"8","hasend":"8","type":"carre","attributes":{"couleur":"bleu","etat":"vide"}}],"obsels_Transformer":[{"hasbegin_trans":"8","hasend_trans":"8","type_trans":"carre","attributes_trans":{"couleur":"rouge","etat":"plein"}}]}]

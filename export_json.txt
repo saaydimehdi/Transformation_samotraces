@@ -1,1 +1,0 @@
-[{"id_interaction":1,"date":"05/01/2014:14:58:42","evt":"trace:remove:obsel","obsels_source":[{"idObs":2,"timestamp":"4","type":"cercle","attributes":{"couleur":"rouge"}}]}]

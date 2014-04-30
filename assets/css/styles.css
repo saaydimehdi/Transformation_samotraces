@@ -41,7 +41,7 @@ textarea{
 
 .blueButton,
 .greenButton{
-	background:url('../img/buttons.png') no-repeat;
+	background:url('../images/buttons.png') no-repeat;
 	text-shadow:1px 1px 1px #277c9b;
 	color:#fff !important;
 	width:99px;
